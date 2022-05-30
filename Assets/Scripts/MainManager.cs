@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.IO;
 
 public class MainManager : MonoBehaviour
 {
@@ -11,8 +12,10 @@ public class MainManager : MonoBehaviour
     public Rigidbody Ball;
 
     public Text ScoreText;
+    public Text BestScoreText;
     public GameObject GameOverText;
-    
+    public GameObject NewBestScoreText;
+
     private bool m_Started = false;
     private int m_Points;
     
@@ -36,6 +39,8 @@ public class MainManager : MonoBehaviour
                 brick.onDestroyed.AddListener(AddPoint);
             }
         }
+
+        BestScoreText.text = "Best Score : " + BestScoreHandler.Instance.bestPlayer + " : " + BestScoreHandler.Instance.bestScore;
     }
 
     private void Update()
@@ -72,5 +77,19 @@ public class MainManager : MonoBehaviour
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
+        
+        if (m_Points >= BestScoreHandler.Instance.bestScore)
+        {
+            BestScoreHandler.Instance.bestScore = m_Points;
+            BestScoreHandler.Instance.bestPlayer = BestScoreHandler.Instance.currentPlayer;
+            BestScoreHandler.Instance.SaveScore();
+
+            BestScoreText.text = "Best Score : " + BestScoreHandler.Instance.bestPlayer + " : " + BestScoreHandler.Instance.bestScore;
+
+            NewBestScoreText.SetActive(true);
+        }
+
     }
+
+
 }
